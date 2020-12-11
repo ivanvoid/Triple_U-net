@@ -4,14 +4,15 @@ import torch.nn.functional as F
 import numpy as np
 from utils import *
 
-channels_ = [64,128,256,512]
-block_config=(4,8,16,12)
+channels_ = [64, 128, 256, 512]
+block_config=(4, 8, 16, 12)
 down_times = 3
 RGB_input_channels = 3
 RGB_output_channel = 1
 H_input_channels = 3
 H_output_channel = 1
 MID_output_channel = 1
+
 class unet_up_sample(nn.Module):
     def __init__(self, inplanes, planes):
         super(unet_up_sample, self).__init__()

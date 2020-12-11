@@ -11,7 +11,7 @@ import skimage.color  as color
 
 
 class trainGenerator(Dataset):
-    def __init__(self, data_dir, label_dir,edge_dir, transform=None):
+    def __init__(self, data_dir, label_dir, edge_dir, transform=None):
         super(Dataset, self).__init__()
         self.data_dir   =   data_dir
         self.label_dir  =   label_dir
@@ -20,12 +20,13 @@ class trainGenerator(Dataset):
         self.img_ids    =   sorted(os.listdir(self.data_dir))
         self.error_name =   True
         self.right_name =   False
-    def just_img_name(self,img_id):
+        
+    def just_img_name(self, img_id):
         if img_id.find('pre')>=0 or  img_id.find('sep')>=0 or  img_id.find('mask')>=0:
             return self.error_name
         return self.right_name    
         
-    def load_image(self, index,norm=True,no_transpose=False):
+    def load_image(self, index, norm=True, no_transpose=False):
         img_id  = self.img_ids[index]
         if self.just_img_name(img_id):
             return torch.FloatTensor([]),img_id
