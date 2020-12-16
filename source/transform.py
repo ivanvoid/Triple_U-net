@@ -8,6 +8,7 @@ import skimage.io as io
 import torch
 from scipy.ndimage.interpolation import map_coordinates
 from scipy.ndimage.filters import gaussian_filter
+import torchvision.transforms.functional as F
 
 #transforms.Compose([
 
@@ -79,17 +80,17 @@ class elastic_transform(object):
 
 class RandomSampleCrop(object):
     def __init__(self, min_win = 0.4):
-        self.sample_options = (
-            # using entire original input image
-            None,
-            # sample a patch s.t. MIN jaccard w/ obj in .1,.3,.4,.7,.9
-            # (0.1, None),
-            # (0.3, None),
-            (0.7, None),
-            (0.9, None),
-            # randomly sample a patch
-            (None, None),
-        )
+#         self.sample_options = (
+#             # using entire original input image
+#             None,
+#             # sample a patch s.t. MIN jaccard w/ obj in .1,.3,.4,.7,.9
+#             # (0.1, None),
+#             # (0.3, None),
+#             (0.7, None),
+#             (0.9, None),
+#             # randomly sample a patch
+#             (None, None),
+#         )
 
         self.min_win = min_win
 
@@ -97,8 +98,8 @@ class RandomSampleCrop(object):
         if random.randint(2):
             return img, mask,HE,edge
             
-        height= np.shape(img)[0]
-        width  = np.shape(img)[1]
+        height = np.shape(img)[0]
+        width = np.shape(img)[1]
         while True:
             w = random.randint(self.min_win*width, width)
             h = random.randint(self.min_win*height, height)
@@ -191,5 +192,32 @@ class resize(object):
         HE = resize_transform(HE, self.size, anti_aliasing=True)
         edge = resize_transform(edge, self.size, anti_aliasing=True)
         return img, mask,HE,edge
-
     
+class RandomCrop(object):
+    def __init__(self, size):
+        self.size = size
+        
+    def __call__(self, img, mask, HE, edge):
+        print(type(img), img.shape, '\n\n')
+        i, j, h, w = self.get_params(img, self.size)
+        img = img[i:h, j:w]
+        mask = mask[i:h, j:w] #F.crop(mask, i, j, h, w)
+        HE = HE[i:h, j:w] #F.crop(HE, i, j, h, w)
+        edge = edge[i:h, j:w] #F.crop(edge, i, j, h, w)
+        
+        print(i, j, h, w)
+        print(mask.max(), '\n\n')
+        
+        return img, mask, HE, edge
+        
+    def get_params(self, img, output_size):
+        w, h = img.shape[:-1]
+        th, tw = output_size
+    
+        if w == tw and h == th:
+            return 0, 0, h, w
+        
+        i = torch.randint(0, h - th + 1, size=(1, )).item()
+        j = torch.randint(0, w - tw + 1, size=(1, )).item()
+        
+        return i, j, th+i, tw+j

@@ -149,7 +149,8 @@ class train(object):
              transform.RandomMirror_w(),
              transform.rotation(),
              transform.flip(),
-             transform.resize((256+128,256+128)),
+             transform.RandomCrop((256, 256)),
+#              transform.resize((256+128,256+128)),
              transform.elastic_transform()])
 
         self.train_data_Generator = self.data_Generator(
