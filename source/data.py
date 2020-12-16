@@ -74,14 +74,14 @@ class trainGenerator(Dataset):
         return torch.FloatTensor(np.transpose(HE, (2,0,1)))
         
     def __getitem__(self, item):
-        img,file     = self.load_image(item,no_transpose=True)
+        img, file     = self.load_image(item,no_transpose=True)
         masks    = self.load_mask(item,no_tensor=True)
         edge    = self.load_edge(item,no_tensor=True)
         HE      = self.load_HE(item,no_transpose=True)
         
 
         if self.transform is not None:
-            return self.transform(img, masks,HE,edge)
+            return self.transform(img, masks, HE, edge)
         return img,HE,masks,edge
         
     def __len__(self):
@@ -126,9 +126,12 @@ def	soft_dice(input, target):
     input_flat = torch.squeeze(input.cpu())
     target_flat = torch.squeeze(target.cpu())
     intersection = input_flat * target_flat
-    loss = 2. * (torch.sum(intersection,dim) + smooth) / (torch.sum(input_flat*input_flat,dim)\
-                    + torch.sum(target_flat*target_flat,dim) + smooth)
+#     loss = 2. * (torch.sum(intersection,dim) + smooth) / (torch.sum(input_flat*input_flat,dim)\
+#                     + torch.sum(target_flat*target_flat,dim) + smooth)
+    loss = 2. * (torch.sum(intersection) + smooth) / (torch.sum(input_flat*input_flat)\
+                    + torch.sum(target_flat*target_flat) + smooth)
 
+    
     loss = torch.mean(1 - loss)
     return loss
     

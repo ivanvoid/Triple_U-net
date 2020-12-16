@@ -14,7 +14,7 @@ import cv2
 import transform
 from skimage import measure
 import skimage.io as io
-
+from os.path import join
 
 def _create_optimizer(conf, model):
     optimizer_config = conf.optim_conf
@@ -149,6 +149,7 @@ class train(object):
              transform.RandomMirror_w(),
              transform.rotation(),
              transform.flip(),
+             transform.resize((256+128,256+128)),
              transform.elastic_transform()])
 
         self.train_data_Generator = self.data_Generator(
@@ -174,6 +175,7 @@ class train(object):
             with torch.enable_grad():
                 self.optimizer.zero_grad()
                 nuclei, contourH, contourRGB = self.net(img, H)
+
                 loss_nuclei = data.soft_dice(nuclei, ground_truth)
 
                 loss_nucleice = data.soft_truncate_ce_loss(nuclei,
@@ -205,7 +207,10 @@ class train(object):
                 epoch, Loss, str(end-start)))
 
             if (epoch > 5 and epoch % 5 == 0):
-                torch.save(self.net, 'model/model-{}.hdf5'.format(epoch))
+                model_path = conf.model_path.split('/')[:-1]
+                model_path = join(*model_path)                
+                
+                torch.save(self.net, join(model_path,f'model-{epoch}.hdf5'))
                 rtime_print('Save AJI model', end='\n')
 
             loss_record.append(Loss)

@@ -180,3 +180,16 @@ class flip(object):
         HE          = cv2.flip(HE,direction)
         edge        = cv2.flip(edge,direction)
         return img, mask,HE,edge
+
+from skimage.transform import resize as resize_transform
+class resize(object):
+    def __init__(self, size):
+        self.size = size
+    def __call__(self, img, mask, HE, edge):
+        img = resize_transform(img, self.size, anti_aliasing=True)
+        mask = resize_transform(mask, self.size, anti_aliasing=True)
+        HE = resize_transform(HE, self.size, anti_aliasing=True)
+        edge = resize_transform(edge, self.size, anti_aliasing=True)
+        return img, mask,HE,edge
+
+    
