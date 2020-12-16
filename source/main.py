@@ -203,10 +203,11 @@ class train(object):
             Loss = self.epoch_train(epoch)
             self.scheduler.step()
             end = time.time()
-            my_print('Epoch{} Loss:{:.6}  cost time:{:.6}'.format(
+            my_print('Epoch: {} Loss: {:.6}  cost time: {:.6}'.format(
                 epoch, Loss, str(end-start)))
 
-            if (epoch > 5 and epoch % 5 == 0):
+            if (epoch > 5 and epoch % 5 == 0 or 
+                    epoch == self.conf.epoches):
                 model_path = conf.model_path.split('/')[:-1]
                 model_path = join(*model_path)                
                 
@@ -245,4 +246,4 @@ if __name__ == '__main__':
         my_activation = test_model(conf)
         my_activation.test()
         end = time.time()
-    my_print('Running time:{}'.format(str(end-start)))
+    my_print('Running time: {}'.format(str(end-start)))
