@@ -103,6 +103,10 @@ class test_model(object):
 
             mask = self.datagen.load_mask(index)
             nuclei, outh, outrgb = self.predition(img, HE, file)
+
+            # np.save('./info/nuclei_'+str(index)+'.npy',nuclei)  ### !!! DELETE 
+            # np.save('./info/outh_'+str(index)+'.npy',outh)  ### !!! DELETE 
+            
             rgb_pre.append(torch.squeeze(outrgb.cpu()))
             nuclei_pre.append(nuclei)
             HE_pre.append(torch.squeeze(outh.cpu()))
@@ -149,7 +153,7 @@ class train(object):
              transform.RandomMirror_w(),
              transform.rotation(),
              transform.flip(),
-             transform.RandomCrop((256, 256)),
+             transform.RandomCrop((256+128,256+128)),
 #              transform.resize((256+128,256+128)),
              transform.elastic_transform()])
 

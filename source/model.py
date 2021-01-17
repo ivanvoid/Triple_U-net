@@ -226,6 +226,8 @@ class net(nn.Module):
 
         self.mid_down_block     = segmentation_branch_down()
         self.mid_branch_up      = segmentation_branch_up()
+        
+        self.centers_regressor  = segmentation_branch_up()
 
     def forward(self, rgb,H):
         H_down_features             = self.H_branch_down(H)
@@ -236,5 +238,7 @@ class net(nn.Module):
         rgb_up_features,rgb_output  = self.rgb_branch_up(rgb_down_features)
         
         nuclei                      = self.mid_branch_up(H_up_features,rgb_up_features,mid_down_features)
-        return nuclei,H_output,rgb_output
+        
+        centers                     = self.centers_regressor(H_up_features,rgb_up_features,mid_down_features)
+        return nuclei,H_output,rgb_output,centers
   

@@ -13,13 +13,13 @@ import skimage.color  as color
 class trainGenerator(Dataset):
     def __init__(self, data_dir, label_dir, edge_dir, transform=None):
         super(Dataset, self).__init__()
-        self.data_dir   =   data_dir
-        self.label_dir  =   label_dir
-        self.edge_dir  =   edge_dir
-        self.transform  =   transform
-        self.img_ids    =   sorted(os.listdir(self.data_dir))
-        self.error_name =   True
-        self.right_name =   False
+        self.data_dir = data_dir
+        self.label_dir =   label_dir
+        self.edge_dir = edge_dir
+        self.transform = transform
+        self.img_ids = sorted(os.listdir(self.data_dir))
+        self.error_name = True
+        self.right_name = False
         
     def just_img_name(self, img_id):
         if img_id.find('pre')>=0 or  img_id.find('sep')>=0 or  img_id.find('mask')>=0:
@@ -63,8 +63,9 @@ class trainGenerator(Dataset):
         if self.just_img_name(img_id):
             return torch.FloatTensor([])
         imgFile = os.path.join(self.data_dir, img_id)
+
         img     = skimage.io.imread(imgFile)
-        
+
         HE      = separate_stain(img)[:,:,0]
         HE      = skimage.color.gray2rgb(HE)
         if no_transpose:

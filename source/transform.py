@@ -198,16 +198,11 @@ class RandomCrop(object):
         self.size = size
         
     def __call__(self, img, mask, HE, edge):
-        print(type(img), img.shape, '\n\n')
         i, j, h, w = self.get_params(img, self.size)
         img = img[i:h, j:w]
-        mask = mask[i:h, j:w] #F.crop(mask, i, j, h, w)
-        HE = HE[i:h, j:w] #F.crop(HE, i, j, h, w)
-        edge = edge[i:h, j:w] #F.crop(edge, i, j, h, w)
-        
-        print(i, j, h, w)
-        print(mask.max(), '\n\n')
-        
+        mask = mask[i:h, j:w]
+        HE = HE[i:h, j:w] 
+        edge = edge[i:h, j:w] 
         return img, mask, HE, edge
         
     def get_params(self, img, output_size):
